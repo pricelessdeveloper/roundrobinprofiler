@@ -1,3 +1,68 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.grey-background {
+    background-color: #333;
+}
+
+.item-font {
+    font-weight: normal;
+    font-family: Verdana,"Open Sans",Arial,"Helvetica Neue",Helvetica,sans-serif;
+}
+
+.item-name {
+    font-size: 14px;
+    line-height: 19px;
+}
+
+.item-enchantment {
+    font-size: 10px;
+    line-height: 19px;
+}
+
+.item-line-item {
+    font-size: 12px;
+}
+
+.item-set-title {
+    color: #ffd100;
+}
+
+.item-set-equipped {
+    color: #ebeec6;;
+}
+
+.item-poor {
+    color: #9d9d9d;
+}
+
+.item-common {
+    color: #fff;
+}
+
+.item-uncommon {
+    color: #1eff00;
+}
+
+.item-rare {
+    color: #0070dd;
+}
+
+.item-epic {
+    color: #a83fee;
+}
+
+.item-legendary {
+    color: #ff8000;
+}
+
+.item-details-hide {
+    display: none;
+}
+
+.hoverable-div:hover + .item-details-hide {
+    display: block;
+    position: absolute;
+    margin-top: -4px;
+}

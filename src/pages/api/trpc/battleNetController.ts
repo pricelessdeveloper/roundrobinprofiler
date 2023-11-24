@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CharacterEquipment from "~/interfaces/CharacterEquipment";
 
-const accessToken = 'USr6W759FYgo6HuGxypkzirY8hgF3uvqGB';
+const accessToken = 'US0TtPimiGgASMKGs3uzBxoWRRDrHDF6eL';
 
 const getUrlPrefix = (region = 'us') => {
     return `https://${region}.api.blizzard.com/`

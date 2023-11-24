@@ -176,17 +176,19 @@ const Profiler: FC<ProfilerProps> = ({ title }) => {
 
     return (
         <>
-            <h1>{characterData ? characterData.character.name : 'Loading...'}</h1>
-            <div className='flex flex-row'>
-                <div className='w-80'>
-                    {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (
-                        <LeftGearSlot item={equippedItem}></LeftGearSlot>
-                    ))}
-                </div>
-                <div className='w-80'>
-                    {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (
-                        <RightGearSlot item={equippedItem}></RightGearSlot>
-                    ))}
+            <div className='grey-background'>
+                <h1>{characterData ? characterData.character.name : 'Loading...'}</h1>
+                <div className='flex flex-row'>
+                    <div className='w-96 m-2'>
+                        {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (
+                            <LeftGearSlot item={equippedItem}></LeftGearSlot>
+                        ))}
+                    </div>
+                    <div className='w-96 m-2'>
+                        {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (
+                            <RightGearSlot item={equippedItem}></RightGearSlot>
+                        ))}
+                    </div>
                 </div>
             </div>
         </>
