@@ -1,15 +1,42 @@
 import React, { FC, useState, useEffect } from 'react';
-import { getCharacterEquipment } from '~/pages/api/trpc/battleNetController';
+import { getCharacterEquipment, getProfileSummary, getCharacterEquipmentAsync } from '~/pages/api/trpc/battleNetController';
 import CharacterEquipment from '~/interfaces/CharacterEquipment';
 import EquippedItem from '~/interfaces/EquippedItem';
 import GearSlot from './GearSlot';
+import Character from '~/interfaces/Character';
 
 interface ProfilerProps {
     title: string;
 }
 
 const Profiler: FC<ProfilerProps> = ({ title }) => {
-    let characterData = getCharacterEquipment('fairbanks', 'alsharptusk');
+    let profileSummary = getProfileSummary();
+
+    const [characters, setCharacters] = useState<Array<Character>>();
+
+    useEffect(() => {
+        let chars: Array<Character> = [];
+        profileSummary?.wow_accounts.forEach((wowAccount) => {
+            wowAccount.characters.forEach((character) => {
+                if (character.level == 60) {
+                    chars.push(character);
+                }
+            })
+        });
+        setCharacters(chars);
+    }, [profileSummary]);
+
+    let characterEquipment: CharacterEquipment | undefined = undefined;
+    
+    const [characterData, setCharacterData] = useState<CharacterEquipment>();
+
+    useEffect(() => {
+        console.debug('using effect');
+        console.debug(characterEquipment);
+        setCharacterData(characterEquipment);
+    }, [characterEquipment])
+
+    //let characterData = getCharacterEquipment('fairbanks', 'alsharptusk');
     
     const headType = 'HEAD';
     const neckType = 'NECK';
@@ -174,10 +201,28 @@ const Profiler: FC<ProfilerProps> = ({ title }) => {
         return null;
     }
 
+    const onCharacterChange = (event: any) => {
+        if (event && event.target && event.target.value && event.target.value.indexOf('-') != -1) {
+            let cName = event.target.value.split('-')[0].toLowerCase();
+            let rName = event.target.value.split('-')[1].toLowerCase();
+            getCharacterEquipmentAsync(rName, cName).then((results) => {
+                setCharacterData(results);
+            });
+        }
+    }
+
     return (
         <>
             <div className='grey-background'>
-                <h1>{characterData ? characterData.character.name : 'Loading...'}</h1>
+                <div className='h-4'></div>
+                <div className='ml-4'>
+                    <select onChange={onCharacterChange}>
+                        <option value=''>Select a Character</option>
+                        {(characters ? characters : []).map(character => (
+                            <option value={`${character.name}-${character.realm.name}`}>{`${character.name} - ${character.realm.name} - ${character.playable_race.name} ${character.playable_class.name}`}</option>
+                        ))}
+                    </select>
+                </div>
                 <div className='flex flex-row'>
                     <div className='w-96 m-2'>
                         {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (

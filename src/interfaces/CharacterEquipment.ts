@@ -1,6 +1,6 @@
 import EquippedItem from "./EquippedItem";
 import EquippedItemSet from "./EquippedItemSet";
-import Character from "./character";
+import Character from "./Character";
 
 export default interface CharacterEquipment {
     character: Character;

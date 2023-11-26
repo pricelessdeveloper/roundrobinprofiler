@@ -61,8 +61,15 @@
     display: none;
 }
 
+.item-details-hide-left {
+    margin-left: 60px;
+}
+
+.item-details-hide-right {
+    margin-right: 60px;
+}
+
 .hoverable-div:hover + .item-details-hide {
     display: block;
     position: absolute;
-    margin-top: -4px;
 }

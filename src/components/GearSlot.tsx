@@ -1,5 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import EquippedItem from '~/interfaces/EquippedItem';
+import ItemMedia from '~/interfaces/ItemMedia';
+import { getItemMedia } from '~/pages/api/trpc/battleNetController';
 
 interface GearSlotProps {
     item: EquippedItem;
@@ -7,6 +9,15 @@ interface GearSlotProps {
 }
 
 const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
+
+    let itemMedia = item.item ? getItemMedia(item.item.id) : {} as ItemMedia;
+
+    const [mediaLink, setItemMediaState] =  useState<string>();
+
+    useEffect(() => {
+        setItemMediaState(itemMedia && itemMedia.assets && itemMedia.assets.length ? itemMedia?.assets[0]?.value : '');
+    }, [itemMedia]);
+
     const getImageSource = () => {
         return `/images/${item.slot.type}.jpg`
     }
@@ -44,34 +55,23 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
     }
 
     const getWowheadEnchantmentLink = (enchantment: any) => {
-        return `http://classic.wowhead.com/item=${enchantment.source_item.id}`;
+        if (enchantment && enchantment.source_item) {
+            return `http://classic.wowhead.com/item=${enchantment.source_item.id}`;
+        }
+        return 'http://classic.wowhead.com/';
     }
 
-    /*const HoverableDiv = (props: { handleMouseOver: any, handleMouseOut: any }) => {
-        return (
-            <div onMouseOver={props.handleMouseOver} onMouseOut={props.handleMouseOut}>
-              Hover Me
-            </div>
-          );
-    }*/
+    const getItemDetailsSide = () => {
+        return isLeft ? 'item-details-hide-left' : 'item-details-hide-right';
+    }
 
     return (
         <>
             <div className={getClassName()}>
-                <span>
-                    <div>
-                        <img alt="" src={getImageSource()} />
-                        <div></div>
-                    </div>
-                    <i></i>
-                </span>
-                <div className='m-1'>
-                    <div className={`hoverable-div ${getAlignmentClass()}`}>
-                        <span className={`item-font item-name ${getQualityClassName()}`}>
-                            <a href={getWowheadLink()} target="_blank">{item.name}</a>
-                        </span>
-                    </div>
-                    <div className='w-80 item-details-hide border border-solid border-white grey-background'>
+                <div className='hoverable-div'>
+                    <a href={getWowheadLink()} target="_blank"><img className='border border-solid border-slate-500' alt="" src={mediaLink && mediaLink.length ? mediaLink : getImageSource()} /></a>
+                </div>
+                <div className={`w-80 item-details-hide ${getItemDetailsSide()} border border-solid border-white grey-background`}>
                         <div className='ml-2 mt-2 mr-2'>
                             <span className={`item-font item-name ${getQualityClassName()}`}>
                                 <a href={getWowheadLink()} target="_blank">{item.name}</a>
@@ -128,6 +128,13 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
                         )) : <></>}
                         <div className='mb-2'></div>
                     </div>
+                <div className='m-1'>
+                    <div className={`hoverable-div ${getAlignmentClass()}`}>
+                        <span className={`item-font item-name ${getQualityClassName()}`}>
+                            <a href={getWowheadLink()} target="_blank">{item.name}</a>
+                        </span>
+                    </div>
+                    
                     {item.enchantments ? item.enchantments.map(enchantment => (
                         <div className={getAlignmentClass()}>
                             <span className='item-font item-uncommon item-enchantment'>
