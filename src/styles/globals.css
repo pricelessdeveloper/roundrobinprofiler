@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.light-grey-background {
+    background-color: #444;
+}
+
 .grey-background {
     background-color: #333;
 }
@@ -72,4 +76,56 @@
 .hoverable-div:hover + .item-details-hide {
     display: block;
     position: absolute;
+}
+
+.class-deathknight {
+    color: #C41E3A;
+}
+
+.class-demonhunter {
+    color: #A330C9;
+}
+
+.class-druid {
+    color: #FF7C0A;
+}
+
+.class-evoker {
+    color: #33937F;
+}
+
+.class-hunter {
+    color: #AAD372;
+}
+
+.class-mage {
+    color: #3FC7EB;
+}
+
+.class-monk {
+    color: #00FF98;
+}
+
+.class-paladin {
+    color: #F48CBA;
+}
+
+.class-priest {
+    color: #FFFFFF;
+}
+
+.class-rogue {
+    color: #FFF468;
+}
+
+.class-shaman {
+    color: #0070DD;
+}
+
+.class-warlock {
+    color: #8788EE;
+}
+
+.class-warrior {
+    color: #C69B6D;
 }

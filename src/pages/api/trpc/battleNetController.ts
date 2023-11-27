@@ -3,7 +3,7 @@ import CharacterEquipment from "~/interfaces/CharacterEquipment";
 import ItemMedia from "~/interfaces/ItemMedia";
 import ProfileSummary from "~/interfaces/ProfileSummary";
 
-const accessToken = 'UScABVntD8sMvWc0ZtohrycPNbsK2uphBq';
+const accessToken = '';
 
 const getUrlPrefix = (region = 'us') => {
     return `https://${region}.api.blizzard.com/`
@@ -41,11 +41,15 @@ export const getProfileSummary = (region = 'us', namespace = 'profile-classic1x-
 }
 
 export async function getCharacterEquipmentAsync(realm: string, characterName: string, region = 'us', namespace = 'profile-classic1x-us', locale = 'en_US'): Promise<CharacterEquipment> {
+    realm = realm.toLowerCase();
+    characterName = characterName.toLowerCase();
     return await getCallAsync<CharacterEquipment>(`${getUrlPrefix(region)}profile/wow/character/${realm}/${characterName}/equipment?`+
         `namespace=${namespace}&locale=${locale}&access_token=${accessToken}`);
 };
 
 export const getCharacterEquipment = (realm: string, characterName: string, region = 'us', namespace = 'profile-classic1x-us', locale = 'en_US') => {
+    realm = realm.toLowerCase();
+    characterName = characterName.toLowerCase();
     return getCall<CharacterEquipment>(`${getUrlPrefix(region)}profile/wow/character/${realm}/${characterName}/equipment?`+
         `namespace=${namespace}&locale=${locale}&access_token=${accessToken}`);
 }

@@ -1,4 +1,5 @@
 import React, { FC, useState, useEffect } from 'react';
+import { Dropdown } from 'primereact/dropdown';
 import { getCharacterEquipment, getProfileSummary, getCharacterEquipmentAsync } from '~/pages/api/trpc/battleNetController';
 import CharacterEquipment from '~/interfaces/CharacterEquipment';
 import EquippedItem from '~/interfaces/EquippedItem';
@@ -9,17 +10,33 @@ interface ProfilerProps {
     title: string;
 }
 
+interface CharacterDropdownRow {
+    name: string;
+    code: string;
+    characterName: string;
+    realm: string;
+    class: string;
+    level: number;
+}
+
 const Profiler: FC<ProfilerProps> = ({ title }) => {
     let profileSummary = getProfileSummary();
 
-    const [characters, setCharacters] = useState<Array<Character>>();
+    const [characters, setCharacters] = useState<Array<CharacterDropdownRow>>();
 
     useEffect(() => {
-        let chars: Array<Character> = [];
+        let chars: Array<CharacterDropdownRow> = [];
         profileSummary?.wow_accounts.forEach((wowAccount) => {
             wowAccount.characters.forEach((character) => {
                 if (character.level == 60) {
-                    chars.push(character);
+                    chars.push({
+                        name: `${character.name} - ${character.realm.name}`,
+                        code: `${character.name}-${character.realm.name}`,
+                        characterName: character.name,
+                        realm: character.realm.name,
+                        class: character.playable_class.name,
+                        level: character.level
+                    });
                 }
             })
         });
@@ -31,8 +48,6 @@ const Profiler: FC<ProfilerProps> = ({ title }) => {
     const [characterData, setCharacterData] = useState<CharacterEquipment>();
 
     useEffect(() => {
-        console.debug('using effect');
-        console.debug(characterEquipment);
         setCharacterData(characterEquipment);
     }, [characterEquipment])
 
@@ -201,37 +216,68 @@ const Profiler: FC<ProfilerProps> = ({ title }) => {
         return null;
     }
 
-    const onCharacterChange = (event: any) => {
-        if (event && event.target && event.target.value && event.target.value.indexOf('-') != -1) {
-            let cName = event.target.value.split('-')[0].toLowerCase();
-            let rName = event.target.value.split('-')[1].toLowerCase();
-            getCharacterEquipmentAsync(rName, cName).then((results) => {
+    const onCharacterChange = (props: { value: CharacterDropdownRow }) => {
+        if (props && props.value) {
+            setSelectedCharacter(props.value);
+            getCharacterEquipmentAsync(props.value.realm, props.value.characterName).then((results) => {
                 setCharacterData(results);
             });
         }
     }
 
+    const SelectedCharacterTemplate = (option: CharacterDropdownRow) => {
+        if (option) {
+            return (
+                <div className='m-2 item-font light-grey-background'>
+                    <span className='item-common'>{`(${option.level}) `}</span>
+                    <span className={`class-${option.class.toLowerCase()}`}>{option.characterName}</span>
+                    <span className='item-common'>{` ${option.realm}`}</span>
+                </div>
+            )
+        }
+
+        return (
+            <div className='m-2 item-font light-grey-background item-common'>Select a Character</div>
+        )
+    }
+
+    const CharacterOptionTemplate = (option: CharacterDropdownRow) => {
+        return (
+            <div className='p-2 item-font light-grey-background'>
+                <span className='item-common'>{`(${option.level}) `}</span>
+                <span className={`class-${option.class.toLowerCase()}`}>{option.characterName}</span>
+                <span className='item-common'>{` ${option.realm}`}</span>
+            </div>
+        )
+    }
+
+    const [selectedCharacter, setSelectedCharacter] = useState<CharacterDropdownRow>();
+
     return (
         <>
             <div className='grey-background'>
                 <div className='h-4'></div>
-                <div className='ml-4'>
-                    <select onChange={onCharacterChange}>
-                        <option value=''>Select a Character</option>
-                        {(characters ? characters : []).map(character => (
-                            <option value={`${character.name}-${character.realm.name}`}>{`${character.name} - ${character.realm.name} - ${character.playable_race.name} ${character.playable_class.name}`}</option>
-                        ))}
-                    </select>
+                <div className='ml-4 mr-4 grid place-items-center'>
+                    <Dropdown
+                        className='m-2 pr-2 md:w-14rem light-grey-background border border-solid border-slate-500 rounded'
+                        value={selectedCharacter}
+                        options={characters}
+                        onChange={onCharacterChange}
+                        valueTemplate={SelectedCharacterTemplate}
+                        itemTemplate={CharacterOptionTemplate}
+                        optionLabel='name'
+                        placeholder='Select a Character'
+                    ></Dropdown>
                 </div>
                 <div className='flex flex-row'>
                     <div className='w-96 m-2'>
                         {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (
-                            <LeftGearSlot item={equippedItem}></LeftGearSlot>
+                            <LeftGearSlot key={equippedItem.name} item={equippedItem}></LeftGearSlot>
                         ))}
                     </div>
                     <div className='w-96 m-2'>
                         {(characterData ? characterData.equipped_items : getDefaultItems()).map(equippedItem => (
-                            <RightGearSlot item={equippedItem}></RightGearSlot>
+                            <RightGearSlot key={equippedItem.name} item={equippedItem}></RightGearSlot>
                         ))}
                     </div>
                 </div>

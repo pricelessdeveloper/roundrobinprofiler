@@ -87,6 +87,22 @@ interface Stat {
     value: number;
 };
 
+interface Weapon {
+    attack_speed: {
+        value: number;
+        display_string: string
+    };
+    damage: {
+        min_value: number;
+        max_value: number;
+        display_string: string;
+    };
+    dps: {
+        value: number;
+        display_string: string;
+    }
+}
+
 export default interface EquippedItem {
     armor?: Armor;
     binding?: TypeName;
@@ -106,4 +122,5 @@ export default interface EquippedItem {
     slot: TypeName;
     spells?: Array<Spell>;
     stats?: Array<Stat>;
+    weapon?: Weapon;
 }

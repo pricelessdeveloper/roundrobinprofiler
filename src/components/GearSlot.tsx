@@ -85,15 +85,22 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
                             <span className='float-right'>{item.item_subclass?.name}</span>
                         </div>
                         <div className='ml-2 mr-2 item-font item-common item-line-item'>
+                            <span>{item.weapon?.damage.display_string}</span>
+                            <span className='float-right'>{item.weapon?.attack_speed.display_string}</span>
+                        </div>
+                        <div className='ml-2 mr-2 item-font item-common item-line-item'>
+                            <span>{item.weapon?.dps.display_string}</span>
+                        </div>
+                        <div className='ml-2 mr-2 item-font item-common item-line-item'>
                             <span>{item.armor?.display.display_string}</span>
                         </div>
                         {item.stats ? item.stats.map(stat => (
-                            <div className='ml-2 mr-2 item-font item-common item-line-item'>
+                            <div key={stat.display.display_string} className='ml-2 mr-2 item-font item-common item-line-item'>
                                 <span>{stat.display.display_string}</span>
                             </div>
                         )) : <></>}
                         {item.enchantments ? item.enchantments.map(enchantment => (
-                            <div className='ml-2 mr-2 item-font item-uncommon item-line-item'>
+                            <div key={enchantment.display_string} className='ml-2 mr-2 item-font item-uncommon item-line-item'>
                                 <span>{enchantment.display_string.replace('Enchanted: ', '')}</span>
                             </div>
                         )) : <></>}
@@ -104,7 +111,7 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
                             <span>{item.requirements?.level?.display_string}</span>
                         </div>
                         {item.spells ? item.spells.map(spell => (
-                            <div className='ml-2 mr-2 item-font item-uncommon item-line-item'>
+                            <div key={spell.description} className='ml-2 mr-2 item-font item-uncommon item-line-item'>
                                 <span>{spell.description}</span>
                             </div>
                         )) : <></>}
@@ -114,7 +121,7 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
                             </div>
                         : <></>}
                         {item.set?.items ? item.set.items.map(setItem => (
-                            <div className='ml-4 mr-2 item-font item-line-item'>
+                            <div key={setItem.item.name} className='ml-4 mr-2 item-font item-line-item'>
                                 <span className={`${setItem.is_equipped ? 'item-set-equipped' : 'item-poor'}`}>{setItem.item.name}</span>
                             </div>
                         )) : <></>}
@@ -122,7 +129,7 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
                             <div className='mt-2'></div>
                         : <></>}
                         {item.set?.effects ? item.set.effects.map(effect => (
-                            <div className='ml-2 mr-2 item-font item-line-item'>
+                            <div key={effect.display_string} className='ml-2 mr-2 item-font item-line-item'>
                                 <span className={`${effect.is_active ? 'item-uncommon' : 'item-poor'}`}>{effect.display_string}</span>
                             </div>
                         )) : <></>}
@@ -136,7 +143,7 @@ const GearSlot: FC<GearSlotProps> = ({ item, isLeft }) => {
                     </div>
                     
                     {item.enchantments ? item.enchantments.map(enchantment => (
-                        <div className={getAlignmentClass()}>
+                        <div key={`${enchantment.display_string}-2`} className={getAlignmentClass()}>
                             <span className='item-font item-uncommon item-enchantment'>
                                 <a href={getWowheadEnchantmentLink(enchantment)} target="_blank">{enchantment.display_string.replace('Enchanted: ', '')}</a>
                             </span>
